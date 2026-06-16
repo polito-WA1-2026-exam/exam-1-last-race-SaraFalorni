@@ -1,5 +1,5 @@
-# Exam #N: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+# Exam #N: "Last Race"
+## Student: s353341 Falorni Sara
 
 ## React Client Application Routes
 
@@ -8,6 +8,8 @@
 - ...
 
 ## API Server
+
+- POST
 
 - POST `/api/something`
   - request parameters and request body content
@@ -22,9 +24,41 @@
 
 ## Database Tables
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+- Table `users` - contains userId, username,  hashedPassword, salt, bestResult
+- Table `connections` - contains connectionId,station1, station2, line 
+- Table `events`- contains eventId, name, effect
+- Table `stations` - contains stationId, name
+
+
+## Data models
+
+function User(userId, username, hashedPwd, salt, bestResult ) {
+  this.userId = userId;
+  this.username = name;
+  this.hashedPwd = hashedPwd;
+  this.salt = salt;
+  this.bestResult = bestResult;
+}
+
+function Connection(connectionId, station1, station2, line) {
+  this.connectionId = connectionId;
+  this.station1 = station1;
+  this.station2 = station2;
+  this.line = line;
+}
+
+function Event(eventId, name, effect) {
+  this.eventId = eventId;
+  this.name = name;
+  this.effect = effect;
+}
+
+function Station(stationId, name) {
+  this.stationId = stationId;
+  this.name = name;
+}
+
+
 
 ## Main React Components
 
