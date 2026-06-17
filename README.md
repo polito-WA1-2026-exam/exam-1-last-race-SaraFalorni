@@ -9,7 +9,48 @@
 
 ## API Server
 
-- POST
+## Authentication
+
+### `GET /api/sessions/current`
+
+- Response body:
+
+```json
+{
+  "userId": 1,
+  "username": "",
+  "bestScore": "",
+}
+```
+- Status codes: `200 OK`, `401 Unauthorized`, `500 Internal Server Error`
+
+### `POST /api/sessions/current`
+
+- Request body:
+
+```json
+{
+  "userId": 1,
+  "username": "",
+  "bestScore": "",
+}
+```
+- Status codes: `200 OK`, `404 Not Found` , `500 Internal Server Error`
+
+### `DELETE /api/sessions/current`
+
+- Request body:
+
+```json
+{
+  "userId": 1,
+  "username": "",
+  "bestScore": "",
+}
+```
+- Status codes: `200 OK`, `404 Not Found` , `500 Internal Server Error`
+
+
 
 - POST `/api/something`
   - request parameters and request body content
@@ -32,31 +73,37 @@
 
 ## Data models
 
-function User(userId, username, hashedPwd, salt, bestResult ) {
+```js
+function User(userId, username, bestResult ) {
   this.userId = userId;
   this.username = name;
-  this.hashedPwd = hashedPwd;
-  this.salt = salt;
   this.bestResult = bestResult;
 }
+```
 
+```js
 function Connection(connectionId, station1, station2, line) {
   this.connectionId = connectionId;
   this.station1 = station1;
   this.station2 = station2;
   this.line = line;
 }
+```
 
+```js
 function Event(eventId, name, effect) {
   this.eventId = eventId;
   this.name = name;
   this.effect = effect;
 }
+```
 
+```js
 function Station(stationId, name) {
   this.stationId = stationId;
   this.name = name;
 }
+```
 
 
 

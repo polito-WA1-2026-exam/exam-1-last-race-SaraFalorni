@@ -1,8 +1,6 @@
-function User(userId, username, hashedPassword, salt, bestResult ) {
+function User(userId, username, bestResult ) {
   this.userId = userId;
   this.username = username;
-  this.hashedPassword = hashedPassword;
-  this.salt = salt;
   this.bestResult = bestResult;
 }
 

@@ -24,14 +24,12 @@ export default function StationDao() {
     this.getAllStations =() => {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM stations';
-            db.get(query, [], (err, row) => {
+            db.all(query, [], (err, rows) => {
                 if (err) {
                     reject(err);
                 }
-                else if (row === undefined) {
-                    resolve({error: 'Stations not found.'});
-                } else {
-                    resolve(row);
+                else {
+                    resolve(rows);
                 }
             });
         });
