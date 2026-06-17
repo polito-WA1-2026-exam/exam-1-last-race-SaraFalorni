@@ -28,7 +28,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
             line: connection.line
         }));
 
-        const gameSession = {startStationId: startStation.stationId, 
+        const gameSession = {startStation: startStation.stationId, 
                              destinationStation: destinationStation.stationId,
                              startedAt: dayjs().valueOf() };
         
@@ -51,11 +51,11 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
 
         //checks if the submission was made after the deadline (due to network latency etc.)
         const GRACEPERIOD_MS = 2000;
-        if(dayjs.diff(currentGame.startedAt) > GAME_DURATION_MS + GRACEPERIOD_MS) {
+        if(dayjs().diff(currentGame.startedAt) > GAME_DURATION_MS + GRACEPERIOD_MS) {
             await userDao.updateBestResult(userId, 0); //game is played, score is 0
             return {
                 valid: false,
-                reson: 'Time expired',
+                reason: 'Time expired',
                 finalScore: 0
             };
         }
@@ -94,7 +94,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
             };
         }
 
-        const validation = validateRoute(connections, currentGame.startStationId, currentGame.destinationStationId);
+        const validation = validateRoute(connections, currentGame.startStation, currentGame.destinationStation);
 
         if(!validation.valid) {
             await userDao.updateBestResult(userId,0); 
@@ -133,7 +133,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
 
         const finalScore = Math.max(0, coins);
 
-        await userDao.updateBestResult(userId, finaleScore);
+        await userDao.updateBestResult(userId, finalScore);
 
         return {
             valid: true,
@@ -154,11 +154,11 @@ function chooseRandomStartAndDestination(stations, connections) {
     for(const startStation of stations) {
         const distances = computeDistances(startStation.stationId, graph);
 
-        for(const [destinationStationId, distance] of distances.entries()) {
-            if(destinationStationId !== startStation.stationId && distance >= MIN_DISTANCE) {
+        for(const [destinationStation, distance] of distances.entries()) {
+            if(destinationStation !== startStation.stationId && distance >= MIN_DISTANCE) {
                 candidateStations.push({
                     startStation,
-                    destinationStation: stationById.get(destinationStationId)
+                    destinationStation: stationById.get(destinationStation)
                 });
             }
         }
@@ -191,11 +191,11 @@ function buildGraph(connections) {
     return graph;
 }
 
-function computeDistances(startStationId, graph) {
+function computeDistances(startStation, graph) {
     const distances = new Map();
-    const stationQueue = [startStationId];
+    const stationQueue = [startStation];
 
-    distances.set(startStationId,0);
+    distances.set(startStation,0);
 
     let queueHead = 0;
     while(queueHead < stationQueue.length) {

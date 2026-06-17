@@ -1,7 +1,6 @@
 import express from 'express';
 import morgan from 'morgan'; // logging middleware
 import cors from 'cors'; // CORS middleware
-import {check, validationResult} from 'express-validator'; // validation middleware
 
 /** Authentication-related imports **/
 import passport from 'passport';                              // authentication middleware

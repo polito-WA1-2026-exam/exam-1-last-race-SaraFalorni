@@ -1,0 +1,79 @@
+@baseUrl = http://localhost:3001
+
+
+### Login  
+# @name login
+POST {{baseUrl}}/api/sessions
+Content-Type: application/json
+
+{
+  "username": "sara",
+  "password": "password"
+}
+
+
+### (expect 200 + { userId, username })
+GET {{baseUrl}}/api/sessions/current
+
+
+### Start a new game  (expect 200 + startStation, destinationStation, availableConnections)
+# @name newGame
+POST {{baseUrl}}/api/games
+
+
+### Submit a route
+POST {{baseUrl}}/api/games/current/route
+Content-Type: application/json
+
+{
+  "connectionIds": [22, 12, 11, 27]
+}
+
+
+### Ranking  (expect 200 + array ordered by bestResult desc)
+GET {{baseUrl}}/api/ranking
+
+
+### Logout  (expect 200, clears the session)
+DELETE {{baseUrl}}/api/sessions/current
+
+
+### Wrong password  (expect 401)
+POST {{baseUrl}}/api/sessions
+Content-Type: application/json
+
+{
+  "username": "sara",
+  "password": "wrongpassword"
+}
+
+
+### Start a game while logged OUT  (expect 401)
+POST {{baseUrl}}/api/games
+
+
+### Empty connectionIds  (expect 422)
+POST {{baseUrl}}/api/games/current/route
+Content-Type: application/json
+
+{
+  "connectionIds": []
+}
+
+
+### Problems with connectionIds (not integers > 0)  (expect 422)
+POST {{baseUrl}}/api/games/current/route
+Content-Type: application/json
+
+{
+  "connectionIds": [0, -3, "x"]
+}
+
+
+### 11. Non-existent connection ids  (expect 200 + valid:false, finalScore:0)
+POST {{baseUrl}}/api/games/current/route
+Content-Type: application/json
+
+{
+  "connectionIds": [9999]
+}
