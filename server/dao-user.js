@@ -1,7 +1,6 @@
 import sqlite from 'sqlite3';
 import crypto from "crypto";
 import db from "./db.js"
-import {User} from "models.js";
 
 export default function UserDao() {
 
@@ -75,7 +74,6 @@ export default function UserDao() {
                 } else {
                     const ranking = rows.map((row, index) => ({
                         position: index + 1,
-                        userId: row.userId,
                         username: row.username,
                         bestResult: row.bestResult
                     }));

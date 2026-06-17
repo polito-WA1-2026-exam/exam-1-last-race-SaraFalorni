@@ -1,5 +1,4 @@
 import sqlite from 'sqlite3';
-import {Connection} from "models.js";
 import db from "./db.js"
 
 export default function ConnectionDao() {

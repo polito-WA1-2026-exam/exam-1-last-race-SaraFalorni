@@ -1,5 +1,4 @@
 import sqlite from 'sqlite3';
-import {Station} from "models.js";
 import db from "./db.js"
 
 export default function StationDao() {

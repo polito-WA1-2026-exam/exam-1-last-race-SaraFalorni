@@ -3,7 +3,7 @@ import StationDao from "./dao-station.js";
 import ConnectionDao from "./dao-connection.js";
 import EventDao from "./dao-event.js";
 
-const dayjs = require('dayjs');
+import dayjs from 'dayjs';
 
 const GAME_DURATION_MS = 90000; //milliseconds
 const GAME_DURATION_S = 90; //seconds
@@ -29,7 +29,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
         }));
 
         const gameSession = {startStationId: startStation.stationId, 
-                             destinationStationId: destinationStation.stationId,
+                             destinationStation: destinationStation.stationId,
                              startedAt: dayjs().valueOf() };
         
         const clientGame = {startStation, 
@@ -49,7 +49,18 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
             };
         }
 
-        if(connectionIds.lenght === 0) {
+        //checks if the submission was made after the deadline (due to network latency etc.)
+        const GRACEPERIOD_MS = 2000;
+        if(dayjs.diff(currentGame.startedAt) > GAME_DURATION_MS + GRACEPERIOD_MS) {
+            await userDao.updateBestResult(userId, 0); //game is played, score is 0
+            return {
+                valid: false,
+                reson: 'Time expired',
+                finalScore: 0
+            };
+        }
+
+        if(connectionIds.length === 0) {
             await userDao.updateBestResult(userId,0); //the game is considered played
 
             return {
@@ -60,7 +71,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
         }
 
         //check server side
-        const hasDuplicates = new Set(connectionIds).size !== connectionIds.lenght;
+        const hasDuplicates = new Set(connectionIds).size !== connectionIds.length;
 
         if(hasDuplicates) {
             await userDao.updateBestResult(userId, 0);
@@ -98,15 +109,15 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
         let coins = INITIAL_COINS;
         const stepsTaken = [];
 
-        for(let i = 0; i < connections.lenght; i++) {
+        const events = await eventDao.getAllEvents();
+        if(events.length === 0)
+            throw new Error('No events available');
+
+        for(let i = 0; i < connections.length; i++) {
             const connection = connections[i];
             const orientedStep = validation.orientedSteps[i];
 
-            const event = await eventDao.getRandomEvent();
-
-            if(event.error) {
-                throw new Error(event.error);
-            }
+            const event = events[Math.floor(Math.random() * events.length)];
 
             coins += event.effect;
 
@@ -120,7 +131,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
             });
         }
 
-        const finaleScore = Math.max(0, coins);
+        const finalScore = Math.max(0, coins);
 
         await userDao.updateBestResult(userId, finaleScore);
 
@@ -147,13 +158,13 @@ function chooseRandomStartAndDestination(stations, connections) {
             if(destinationStationId !== startStation.stationId && distance >= MIN_DISTANCE) {
                 candidateStations.push({
                     startStation,
-                    destinationStationId: stationById.get(destinationStationId)
+                    destinationStation: stationById.get(destinationStationId)
                 });
             }
         }
     }
 
-    if(candidateStations.lenght === 0) {
+    if(candidateStations.length === 0) {
         throw new Error('No valid start destination station pair found');
     }
 
@@ -186,14 +197,15 @@ function computeDistances(startStationId, graph) {
 
     distances.set(startStationId,0);
 
-    while(stationQueue.length > 0) {
-        const currentStationId = stationQueue.shift();
+    let queueHead = 0;
+    while(queueHead < stationQueue.length) {
+        const currentStationId = stationQueue[queueHead++];
         const currentDistance = distances.get(currentStationId);
 
         const neighbors = graph.get(currentStationId) || [];
 
         for(const neighbor of neighbors) {
-            if(!distances.has(neighbors)) {
+            if(!distances.has(neighbor)) {
                 distances.set(neighbor, currentDistance + 1);
                 stationQueue.push(neighbor);
             }
@@ -227,8 +239,8 @@ function validateRoute(connections, startStation, destinationStation) {
 
         orientedSteps.push({
             connectionId: connection.connectionId,
-            fromStation: currentStationId,
-            toStation: nextStationId
+            fromStation: currentStation,
+            toStation: nextStation
         });
 
         currentStation = nextStation; //next step

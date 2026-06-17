@@ -132,12 +132,11 @@ app.post('/api/sessions', function(req, res, next) {
 
   // DELETE /api/session/current
   // This route is used for loggin out the current user.
-  app.delete('/api/sessions/current', (req, res) => {
+  app.delete('/api/sessions/current', (req, res, next) => {
     req.logout((err) => {
         if(err) {
             return next(err);
         }
-
         res.status(200).end();
     });
   });
@@ -183,7 +182,7 @@ app.post('/api/games/current/route', isLoggedIn, async (req, res, next) => {
 
 //GET /api/ranking
 //returns rank of users that have played at least one game
-app.get('api/ranking', isLoggedIn, async (req, res, next) => {
+app.get('/api/ranking', isLoggedIn, async (req, res, next) => {
     try{
         const ranking = await userDao.getRanking();
         return res.json(ranking);
@@ -191,3 +190,5 @@ app.get('api/ranking', isLoggedIn, async (req, res, next) => {
         return next(err);
     }
 });
+
+export default app;
