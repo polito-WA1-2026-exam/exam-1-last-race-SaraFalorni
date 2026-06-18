@@ -1,5 +1,6 @@
 import sqlite from 'sqlite3';
-import db from "./db.js"
+import db from "./db.js";
+import {Connection} from "./models.js";
 
 export default function ConnectionDao() {
 
@@ -11,7 +12,8 @@ export default function ConnectionDao() {
                     reject(err);
                 }
                 else {
-                    resolve(rows);
+                    const connections = rows.map(row => new Connection(row.connectionId, row.station1, row.station2, row.line));
+                    resolve(connections);
                 }
             });
         });
@@ -32,7 +34,7 @@ export default function ConnectionDao() {
                         reject(err);
                     } else {
                         const connectionMap = new Map(
-                            rows.map(connection => [connection.connectionId, connection])
+                            rows.map(row => [row.connectionId, new Connection(row.connectionId, row.station1, row.station2, row.line)])
                         );
 
                         const orderedConnections = connectionIds.map(id => connectionMap.get(id));

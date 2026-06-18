@@ -1,5 +1,6 @@
 import sqlite from 'sqlite3';
-import db from "./db.js"
+import db from "./db.js";
+import {Station} from "./models.js";
 
 export default function StationDao() {
 
@@ -14,7 +15,7 @@ export default function StationDao() {
                 else if (row === undefined) {
                     resolve({error: 'Station not found.'});
                 } else {
-                    resolve(row);
+                    resolve(new Station(row.stationId, row.name));
                 }
             });
         });
@@ -28,7 +29,8 @@ export default function StationDao() {
                     reject(err);
                 }
                 else {
-                    resolve(rows);
+                    const stations = rows.map(row => new Station(row.stationId, row.name));
+                    resolve(stations);
                 }
             });
         });

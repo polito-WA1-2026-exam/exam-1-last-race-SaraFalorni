@@ -1,6 +1,7 @@
 import sqlite from 'sqlite3';
 import crypto from "crypto";
-import db from "./db.js"
+import db from "./db.js";
+import {User} from "./models.js";
 
 export default function UserDao() {
 
@@ -14,7 +15,7 @@ export default function UserDao() {
                 else if (row === undefined) {
                     resolve({error: 'User not found.'});
                 } else {
-                    resolve(row);
+                    resolve(new User(row.userId, row.username, row.bestResult));
                 }
             });
         });
@@ -30,7 +31,7 @@ export default function UserDao() {
                     resolve(false);
                 }
                 else {
-                    const user = { userId: row.userId, username: row.username };
+                    const user = new User(row.userId, row.username, row.bestResult);
                     
                     crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) { 
                         if (err) reject(err);

@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan'; // logging middleware
 import cors from 'cors'; // CORS middleware
+import {check, validationResult} from 'express-validator'; // validation middleware
 
 /** Authentication-related imports **/
 import passport from 'passport';                              // authentication middleware
@@ -100,24 +101,34 @@ const errorFormatter = ({msg}) => {
 
 // POST /api/sessions
 // This route is used for performing login.
-app.post('/api/sessions', function(req, res, next) {
-    passport.authenticate('local', (err, user, info) => {
-        if (err)
-            return next(err);
-        if (!user) {
-            // display wrong login messages
-            return res.status(401).json({ error: info});
-        }
-        // success, perform the login and extablish a login session
-        req.login(user, (err) => {
+app.post('/api/sessions', 
+    [
+        check('username').notEmpty().withMessage('username required'),
+        check('password').notEmpty().withMessage('password required'),
+    ],
+    function(req, res, next) {
+        //input validation
+        const errors = validationResult(req);
+        if(!errors.isEmpty())
+            return onValidationErrors(errors,res);
+
+        passport.authenticate('local', (err, user, info) => {
             if (err)
                 return next(err);
+            if (!user) {
+                // display wrong login messages
+                return res.status(401).json({ error: info});
+            }
+            // success, perform the login and extablish a login session
+            req.login(user, (err) => {
+                if (err)
+                    return next(err);
 
-            // req.user contains the authenticated user, we send all the user info back
-            // this is coming from userDao.getUserByCredentials() in LocalStratecy Verify Function
-            return res.json(req.user);
-        });
-    })(req, res, next);
+                // req.user contains the authenticated user, we send all the user info back
+                // this is coming from userDao.getUserByCredentials() in LocalStratecy Verify Function
+                return res.json(req.user);
+            });
+        })(req, res, next);
   });
 
   // GET /api/sessions/current
@@ -157,26 +168,26 @@ app.post('/api/games', isLoggedIn, async (req, res, next) => {
 // POST /api/games/current/route
 //submits the route selected by the user, validates it, selects events and returns them and the result
 
-app.post('/api/games/current/route', isLoggedIn, async (req, res, next) => {
-    const connectionIds = req.body.connectionIds;
+app.post('/api/games/current/route', isLoggedIn, [
+    check('connectionIds').isArray({min: 1}).withMessage('connectionIds should be a non empty array'),
+    check('connectionIds.*').isInt({min: 1}).withMessage('each connection should have an id that is a positive integer'),
+    ],
+    async (req, res, next) => {
+        //input checks
+        const errors = validationResult(req);
+        if(!errors.isEmpty())
+            return onValidationErrors(errors, res);
 
-    //connection Ids validity checks
-    if(!Array.isArray(connectionIds) || connectionIds.length === 0) 
-        return res.status(422).json({error: 'connectionIds should be a non empty array'});
+        const connectionIds = req.body.connectionIds;
+        try{
+            const result = await gameService.submitRoute(req.user.userId, req.session.currentGame, connectionIds);
+            delete req.session.currentGame; //current game has ended
 
-    if(!connectionIds.every(id => Number.isInteger(id) && id > 0)) {
-        return res.status(422).json({error: 'ceach connection should have an id that is an integer equal or greater than one'});
-    }
+            return res.json(result);
 
-    try{
-        const result = await gameService.submitRoute(req.user.userId, req.session.currentGame, connectionIds);
-        delete req.session.currentGame; //current game has ended
-
-        return res.json(result);
-
-    } catch(err) {
-        return next(err);
-    }
+        } catch(err) {
+            return next(err);
+        }
 });
 
 //GET /api/ranking

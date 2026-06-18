@@ -1,5 +1,6 @@
 import sqlite from 'sqlite3';
-import db from "./db.js"
+import db from "./db.js";
+import {Event} from "./models.js"
 
 export default function EventDao() {
 
@@ -10,7 +11,8 @@ export default function EventDao() {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(rows);
+                    const events = rows.map(row => new Event(row.eventId, row.name, row.effect));
+                    resolve(events);
                 }
             });
         });
