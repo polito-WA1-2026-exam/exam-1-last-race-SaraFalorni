@@ -232,6 +232,9 @@ to add descriptions
 Briefly describe whether you used any AI tools (e.g., ChatGPT, GitHub Copilot, Claude) while working on this project, for which purposes (e.g., clarifying concepts, debugging, generating code), and how you verified or adapted their output.
 If you did not use any AI tools, simply state so.
 
+- Database population
+- Game rules description in `Homepage`
+
 
 ### check TO DO
 - errors in user authentication if user inserts wrong password
