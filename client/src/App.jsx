@@ -5,10 +5,12 @@ import {Container} from 'react-bootstrap';
 import API from './API.js';
 import NavHeader from './components/NavHeader.jsx';
 import HomePage from './components/HomePage.jsx';
+import RankingPage from './components/RankingPage.jsx';
 import {LoginForm} from './components/Auth.jsx';
 
 function App() {
   const [user, setUser] = useState(null); //null is not logged in
+  const [loading, setLoading] = useState(true);
 
   //checks if logged in (once)
   useEffect(() => {
@@ -18,6 +20,8 @@ function App() {
         setUser(userInfo);
       } catch {
         setUser(null); //no session == not logged in
+      } finally {
+        setLoading(false);
       }
     };
     checkAuth();
@@ -36,11 +40,14 @@ function App() {
   return (<> 
     <NavHeader user={user} logout={handleLogout}/>
       <Container className='mt-3'>
-        <Routes>
-          <Route path="/" element={<HomePage />}/>
-          <Route path="/login" element={<LoginForm login={handleLogin} />}/>
-          <Route path="*" element={<Navigate to="/" replace />}/>
-        </Routes>
+        {loading ? (<p>loading...</p>) :
+          (<Routes>
+            <Route path="/" element={<HomePage user={user} />}/>
+            <Route path="/login" element={<LoginForm login={handleLogin} />}/>
+            <Route path="/ranking" element={user ? <RankingPage/> : <Navigate to="/login" replace />}/>
+            <Route path="*" element={<Navigate to="/" replace />}/>
+          </Routes>)
+        }
       </Container>
   </>); 
 }
