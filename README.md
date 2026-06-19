@@ -242,3 +242,4 @@ If you did not use any AI tools, simply state so.
 - middleware checks for all the apis
 - BestResult / BestScore choose one or the other, confusing
 - Mappe con i nomi delle stazioni troppo piccole, correggere le immagini (diminuire le stazioni?)
+- available connection in ordine alfabetico rispetto alla station1 ???
