@@ -6,6 +6,7 @@ import API from './API.js';
 import NavHeader from './components/NavHeader.jsx';
 import HomePage from './components/HomePage.jsx';
 import RankingPage from './components/RankingPage.jsx';
+import GamePage from './components/GamePage.jsx';
 import {LoginForm} from './components/Auth.jsx';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/" element={<HomePage user={user} />}/>
             <Route path="/login" element={<LoginForm login={handleLogin} />}/>
             <Route path="/ranking" element={user ? <RankingPage/> : <Navigate to="/login" replace />}/>
+            <Route path="/game" element={user ? <GamePage/> : <Navigate to="/login" replace />}/>
             <Route path="*" element={<Navigate to="/" replace />}/>
           </Routes>)
         }

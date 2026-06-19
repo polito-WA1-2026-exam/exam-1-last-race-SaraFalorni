@@ -62,7 +62,7 @@ function LogoutButton({logout}) {
     const navigate = useNavigate();
     const handleLogout = async () => {
         await logout();
-        navigate('/'); //Homepage, only page visible to logged out users
+        navigate('/Homepage'); //Homepage, only page visible to logged out users
     };
     return <Button variant ="outline-light" onClick={handleLogout}> Logout </Button>
 }
