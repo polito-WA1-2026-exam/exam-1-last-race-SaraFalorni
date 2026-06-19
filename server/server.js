@@ -169,7 +169,7 @@ app.post('/api/games', isLoggedIn, async (req, res, next) => {
 //submits the route selected by the user, validates it, selects events and returns them and the result
 
 app.post('/api/games/current/route', isLoggedIn, [
-    check('connectionIds').isArray({min: 1}).withMessage('connectionIds should be a non empty array'),
+    check('connectionIds').isArray(/*{min: 1}*/).withMessage('connectionIds should be a non empty array'),
     check('connectionIds.*').isInt({min: 1}).withMessage('each connection should have an id that is a positive integer'),
     ],
     async (req, res, next) => {

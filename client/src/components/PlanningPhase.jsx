@@ -1,9 +1,24 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {Button, ListGroup, Row, Col} from 'react-bootstrap';
 
 function PlanningPhase({game, onSubmit}) {
     const [selected, setSelected] = useState([]); //list of chosen connections
+    const [timeLeft, setTimeLeft] = useState(game.durationSeconds); //seconds
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setTimeLeft((oldTime) => (oldTime <= 1 ? 0 : oldTime-1));
+        }, 1000);
+        return () => clearInterval(intervalId); //clean up
+    }, []);
+
+    useEffect(() => {
+        if(timeLeft === 0)
+            onSubmit(selected);
+    }, [timeLeft]);
+
+
 
     const selectConnection = (connectionId) => {
             setSelected((oldSelected) => {
@@ -15,6 +30,7 @@ function PlanningPhase({game, onSubmit}) {
     return(<>
         <h2>Planning Phase</h2>
         <p>Get from <b>{game.startStation.name}</b> to <b>{game.destinationStation.name}</b></p>
+        <p>Time left: <b>{timeLeft}</b> seconds</p>
         <img src="/img/map-noConnections.svg" alt="Stations map" style={{maxWidth:'100%'}}/>
 
         <Row className="mt-3">
