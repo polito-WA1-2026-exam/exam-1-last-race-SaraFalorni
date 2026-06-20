@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router';
 function HomePage({user}) {
     const navigate = useNavigate();
     return(<>
-        <h1>HomePage Last Race</h1>
+        <h1>Last Race</h1>
         <p>
             Plan and run a route across the network before time runs out!
             Every game starts with 20 coins.

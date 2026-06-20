@@ -107,17 +107,17 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
         if(events.length === 0)
             throw new Error('No events available');
 
+        //to get the station name
+        const stations = await stationDao.getAllStations(); 
+        const stationNameById = new Map(stations.map(s => [s.stationId, s.name])) 
+
         for(let i = 0; i < connections.length; i++) {
             const connection = connections[i];
             const orientedStep = validation.orientedSteps[i];
 
             const event = events[Math.floor(Math.random() * events.length)];
 
-            coins += event.effect;
-
-            //to get the station name
-            const stations = await stationDao.getAllStations(); 
-            const stationNameById = new Map(stations.map(s => [s.stationId, s.name]))        
+            coins += event.effect;       
 
             stepsTaken.push({
                 connectionId: connection.connectionId,

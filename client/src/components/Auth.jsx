@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Button, Col, Form, Row, FormGroup } from "react-bootstrap";
+import { Alert, Button, Col, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router";
 import PropTypes from 'prop-types';
 
@@ -62,7 +62,7 @@ function LogoutButton({logout}) {
     const navigate = useNavigate();
     const handleLogout = async () => {
         await logout();
-        navigate('/Homepage'); //Homepage, only page visible to logged out users
+        navigate('/'); //Homepage, only page visible to logged out users
     };
     return <Button variant ="outline-light" onClick={handleLogout}> Logout </Button>
 }

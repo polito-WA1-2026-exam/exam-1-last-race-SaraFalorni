@@ -149,7 +149,7 @@ returns the ranking in descending order, including only users that played at lea
 ## Database Tables
 
 - Table `users` - contains userId, username,  hashedPassword, salt, bestResult
-- Table `connections` - contains connectionId,station1, station2, line 
+- Table `connections` - contains connectionId, station1, station2, line 
 - Table `events`- contains eventId, name, effect
 - Table `stations` - contains stationId, name
 
@@ -197,7 +197,7 @@ to add descriptions
 - `LoginForm`
   - `LoginForm`
   - `DoLoginButton`
-- `Navbar` : received props user.userId 
+- `NavHeader` 
 - `HomePage`
   - `GameInstructions`
   - `LoginButton`
@@ -225,8 +225,10 @@ to add descriptions
 
 ## Users Credentials
 
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+- sara, password 
+- marco, password 
+- giulia, password 
+- luca, password (hasn't played a game yet)
 
 ## Use of AI Tools
 Briefly describe whether you used any AI tools (e.g., ChatGPT, GitHub Copilot, Claude) while working on this project, for which purposes (e.g., clarifying concepts, debugging, generating code), and how you verified or adapted their output.
