@@ -56,7 +56,7 @@ function PlanningPhase({game, onSubmit}) {
                         const connection = game.availableConnections.find((x) => x.connectionId === id);
                         return (
                             <ListGroup.Item key={id}>
-                                {index + 1}, {connection.station1Name} - {connection.station2Name}
+                                {index + 1}. {connection.station1Name} - {connection.station2Name}
                             </ListGroup.Item>
                         );
                     })}

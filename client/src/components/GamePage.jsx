@@ -4,6 +4,7 @@ import API from '../API.js';
 import SetupPhase from './SetupPhase.jsx';
 import PlanningPhase from './PlanningPhase.jsx';
 import SummaryPhase from './SummaryPhase.jsx';
+import ExecutionPhase from './ExecutionPhase.jsx';
 
 function GamePage() {
     const [phase, setPhase] = useState('setup'); //phases are 'setup' 'planning' 'execution' 'summary'
@@ -25,7 +26,7 @@ function GamePage() {
         try {
             const result = await API.submitRoute(connectionIds);
             setResult(result);
-            setPhase('summary');
+            setPhase(result.valid ? 'execution' : 'summary');
         } catch(err) {
             setErrorMessage(err.error || err.message || "Couldn't submit the route");
         }
@@ -44,6 +45,7 @@ function GamePage() {
         {phase === 'setup' && <SetupPhase onReady={beginPlanningPhase}/>}
         {phase === 'planning' && <PlanningPhase game={game} onSubmit={finishPlanningPhase}/>}
         {phase === 'summary' && <SummaryPhase result={result} onNewGame={newGame}/>}
+        {phase === 'execution' && <ExecutionPhase result={result} onDone={() => setPhase('summary')}/>}
     </>);
 }
 
