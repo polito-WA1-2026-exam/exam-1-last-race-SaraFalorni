@@ -115,10 +115,16 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
 
             coins += event.effect;
 
+            //to get the station name
+            const stations = await stationDao.getAllStations(); 
+            const stationNameById = new Map(stations.map(s => [s.stationId, s.name]))        
+
             stepsTaken.push({
                 connectionId: connection.connectionId,
                 fromStation: orientedStep.fromStation,
                 toStation: orientedStep.toStation,
+                fromStationName: stationNameById.get(orientedStep.fromStation),
+                toStationName: stationNameById.get(orientedStep.toStation),
                 line: connection.line,
                 event,
                 coinsAfterStep: coins

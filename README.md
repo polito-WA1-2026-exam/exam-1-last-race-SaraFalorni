@@ -237,9 +237,5 @@ If you did not use any AI tools, simply state so.
 
 
 ### check TO DO
-- errors in user authentication if user inserts wrong password
-- controlli al serialize and deserialize della sessione, check se la sessione esiste sempre in dserialize etc.
-- middleware checks for all the apis
-- BestResult / BestScore choose one or the other, confusing
 - Mappe con i nomi delle stazioni troppo piccole, correggere le immagini (diminuire le stazioni?)
 - available connection in ordine alfabetico rispetto alla station1 ???

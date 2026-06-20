@@ -38,11 +38,6 @@ app.use(cors(corsOptions));
 
 /*** Passport ***/
 
-
-
-/** Set up authentication strategy to search in the DB a user with a matching password.
- * The user object will contain other information extracted by the method userDao.getUserByCredentials().
- **/
 passport.use(new LocalStrategy(async function verify(username, password, callback) {
     const user = await userDao.getUserByCredentials(username, password)
     if(!user)
@@ -59,11 +54,7 @@ passport.serializeUser(function (user, callback) {
 // Starting from the data in the session, we extract the current (logged-in) user.
 passport.deserializeUser(function (user, callback) { // this user is userId + username
     return callback(null, user); // this will be available in req.user
-
-    // In this method, if needed, we can do extra check here (e.g., double check that the user is still in the database, etc.)
-    // e.g.: return userDao.getUserById(id).then(user => callback(null, user)).catch(err => callback(err, null));
 });
-
 
 /** Creating the session */
 
@@ -100,7 +91,7 @@ const errorFormatter = ({msg}) => {
 /*** Users APIs ***/
 
 // POST /api/sessions
-// This route is used for performing login.
+// This route is used for performing login
 app.post('/api/sessions', 
     [
         check('username').notEmpty().withMessage('username required'),
@@ -124,8 +115,7 @@ app.post('/api/sessions',
                 if (err)
                     return next(err);
 
-                // req.user contains the authenticated user, we send all the user info back
-                // this is coming from userDao.getUserByCredentials() in LocalStratecy Verify Function
+                // req.user contains the authenticated user
                 return res.json(req.user);
             });
         })(req, res, next);
@@ -151,6 +141,8 @@ app.post('/api/sessions',
     });
   });
 
+/*** Game APIs ***/
+
 //POST /api/games
 //starts new game for logged in user
 app.post('/api/games', isLoggedIn, async (req, res, next) => {
@@ -169,7 +161,7 @@ app.post('/api/games', isLoggedIn, async (req, res, next) => {
 //submits the route selected by the user, validates it, selects events and returns them and the result
 
 app.post('/api/games/current/route', isLoggedIn, [
-    check('connectionIds').isArray(/*{min: 1}*/).withMessage('connectionIds should be a non empty array'),
+    check('connectionIds').isArray().withMessage('connectionIds should be a non empty array'),
     check('connectionIds.*').isInt({min: 1}).withMessage('each connection should have an id that is a positive integer'),
     ],
     async (req, res, next) => {
