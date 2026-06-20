@@ -1,4 +1,3 @@
-import sqlite from 'sqlite3';
 import crypto from "crypto";
 import db from "./db.js";
 import {User} from "./models.js";

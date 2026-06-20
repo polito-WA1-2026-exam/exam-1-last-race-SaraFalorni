@@ -1,8 +1,3 @@
-import UserDao from "./dao-user.js";
-import StationDao from "./dao-station.js";
-import ConnectionDao from "./dao-connection.js";
-import EventDao from "./dao-event.js";
-
 import dayjs from 'dayjs';
 
 const GAME_DURATION_MS = 90000; //milliseconds
@@ -24,8 +19,7 @@ export default function GameService(stationDao, connectionDao, eventDao, userDao
             station1: connection.station1,
             station1Name: stationById.get(connection.station1).name,
             station2: connection.station2,
-            station2Name: stationById.get(connection.station2).name,
-            line: connection.line
+            station2Name: stationById.get(connection.station2).name
         }));
 
         const gameSession = {startStation: startStation.stationId, 

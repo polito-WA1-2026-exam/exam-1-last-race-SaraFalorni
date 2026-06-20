@@ -7,7 +7,7 @@ function NavHeader({user, logout}) {
     return(
         <Navbar bg = 'primary'>
             <Container>
-                <Navbar.Brand>Last race</Navbar.Brand>
+                <Navbar.Brand as={Link} to='/' className='text-light'><b>Last race</b></Navbar.Brand>
                 <div className="d-flex align-items-center gap-3">
                     {user && <Nav.Link as={Link} to='/ranking' className='text-light'>Ranking</Nav.Link>}
                     {user && <Nav.Link as={Link} to='/game' className='text-light'>Play a game</Nav.Link>}

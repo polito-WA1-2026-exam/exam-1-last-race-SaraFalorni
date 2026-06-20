@@ -1,4 +1,3 @@
-import sqlite from 'sqlite3';
 import db from "./db.js";
 import {Event} from "./models.js"
 
