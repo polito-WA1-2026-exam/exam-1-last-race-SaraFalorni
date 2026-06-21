@@ -1,13 +1,47 @@
-# Exam #N: "Last Race"
+# Exam : "Last Race"
 ## Student: s353341 Falorni Sara
 
-## React Client Application Routes
+## Database Tables
 
-- Route `/`: home page (displays the game rules, login button)
-- Route `/login`: login page
-- Route `/ranking`: ranking page
-- Route `/game`: 
-- Route `*` : page not found
+- Table `users` - contains userId, username,  hashedPassword, salt, bestResult
+- Table `connections` - contains connectionId, station1, station2, line 
+- Table `events`- contains eventId, name, effect
+- Table `stations` - contains stationId, name
+
+
+## Data models
+
+```js
+function User(userId, username, bestResult ) {
+  this.userId = userId;
+  this.username = name;
+  this.bestResult = bestResult;
+}
+```
+
+```js
+function Connection(connectionId, station1, station2, line) {
+  this.connectionId = connectionId;
+  this.station1 = station1;
+  this.station2 = station2;
+  this.line = line;
+}
+```
+
+```js
+function Event(eventId, name, effect) {
+  this.eventId = eventId;
+  this.name = name;
+  this.effect = effect;
+}
+```
+
+```js
+function Station(stationId, name) {
+  this.stationId = stationId;
+  this.name = name;
+}
+```
 
 
 ## API Server
@@ -61,10 +95,10 @@
 
 ### `POST /api/games`
 
-starts a new game for a logged in user (assigns random start and destination stations and returns all available connections in the network)
+starts a new game for a logged in user (assigns random start and destination stations and returns all available connections in the network and the game duration)
 
 - Request body: none
-- Response bod: 
+- Response body: 
 
 ```json
 {
@@ -77,7 +111,6 @@ starts a new game for a logged in user (assigns random start and destination sta
       "station1Name": "Anellini Alley",
       "station2": 2,
       "station2Name": "Pici Path",
-      "line": "Egg"
     }
   ],
   "durationSeconds": 90
@@ -87,9 +120,10 @@ starts a new game for a logged in user (assigns random start and destination sta
 
 ### `POST /api/games/current/route`
 
-submits user's route, the server validates it and applies the random events, finally computes the score
+submits user's route, the server validates it and applies the random events, finally computes the score.
+It returns wheter the route is valid or not, ans the final score; in the first case also return the list of steps (a step is a connection,the associated event and the coins after the step).
 
-- Request body: the ordered list of selected segment ids
+- Request body: the ordered list of selected connection ids
 
 ```json
 {
@@ -108,6 +142,8 @@ submits user's route, the server validates it and applies the random events, fin
       "connectionId": 1,
       "fromStation": 1,
       "toStation": 2,
+      "fromStationName": "Anellini Alley",
+      "toStationName": "Pici path",
       "line": "Egg",
       "event": { "eventId": 7, "name": "Train Arrives Early", "effect": 1 },
       "coinsAfterStep": 21
@@ -132,7 +168,8 @@ submits user's route, the server validates it and applies the random events, fin
 ## Ranking
 
 ### `GET /api/ranking`
-returns the ranking in descending order, including only users that played at least one game (user.bestResult == NULL means no game has been played yet)
+returns the ranking in descending order, including only users that played at least one game 
+(user.bestResult == NULL means no game has been played yet)
 
 - Response body:
 
@@ -146,82 +183,49 @@ returns the ranking in descending order, including only users that played at lea
 - Status codes: `200 OK`, `401 Unauthorized`, `500 Internal Server Error`
 
 
-## Database Tables
+## React Client Application Routes
 
-- Table `users` - contains userId, username,  hashedPassword, salt, bestResult
-- Table `connections` - contains connectionId, station1, station2, line 
-- Table `events`- contains eventId, name, effect
-- Table `stations` - contains stationId, name
-
-
-## Data models
-
-```js
-function User(userId, username, bestResult ) {
-  this.userId = userId;
-  this.username = name;
-  this.bestResult = bestResult;
-}
-```
-
-```js
-function Connection(connectionId, station1, station2, line) {
-  this.connectionId = connectionId;
-  this.station1 = station1;
-  this.station2 = station2;
-  this.line = line;
-}
-```
-
-```js
-function Event(eventId, name, effect) {
-  this.eventId = eventId;
-  this.name = name;
-  this.effect = effect;
-}
-```
-
-```js
-function Station(stationId, name) {
-  this.stationId = stationId;
-  this.name = name;
-}
-```
-
+- Route `/`: home page (displays the game rules, login button)
+- Route `/login`: login page (contain the login form)
+- Route `/ranking`: ranking page (contains the ranking)
+- Route `/game`: game page (the main page to start and play a game)
+- Route `*` : page not found
 
 
 ## Main React Components
 
-# design stage (modify after implementation)
-to add descriptions
-- `LoginForm`
-  - `LoginForm`
-  - `DoLoginButton`
 - `NavHeader` 
-- `HomePage`
-  - `GameInstructions`
+  - `LogoutButton` 
   - `LoginButton`
+- `HomePage`
+  - `PlayButton`
+- `LoginForm`
 - `RankingPage`
-- `ConnectionList`
+  - `RankTable`
 - `GamePage`
 - `SetUpPhase`
-  - `Map`
   - `StartGameButton`
 - `PlanningPhase` 
-  - `NetworkMap`
-  - `Timer`
+  - `AvailableConnectionsList`
+  - `SelectedConnectionsList`
+  - `SubmitButton`
 - `ExecutionPhase` 
-  - `some button`
+  - `StepsTable`
+  - `SeeSummaryButton`
 - `SummaryPhase`
   - `FinalScore`
-  - `some button`
+  - `StartNewGameButton`
 
-
-(only _main_ components, minor ones may be skipped)
 
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+### Ranking page
+
+![Screenshot](./img/ranking.png)
+
+### Game page (during execution phase)
+
+![Screenshot](./img/game.png)
 
 ## Users Credentials
 
@@ -231,13 +235,8 @@ to add descriptions
 - luca, password (hasn't played a game yet)
 
 ## Use of AI Tools
-Briefly describe whether you used any AI tools (e.g., ChatGPT, GitHub Copilot, Claude) while working on this project, for which purposes (e.g., clarifying concepts, debugging, generating code), and how you verified or adapted their output.
-If you did not use any AI tools, simply state so.
 
 - Database population
 - Game rules description in `Homepage`
 
 
-### check TO DO
-- Mappe con i nomi delle stazioni troppo piccole, correggere le immagini (diminuire le stazioni?)
-- available connection in ordine alfabetico rispetto alla station1 ???
