@@ -31,26 +31,38 @@ function PlanningPhase({game, onSubmit}) {
         <h2>Planning Phase</h2>
         <p>Get from <b>{game.startStation.name}</b> to <b>{game.destinationStation.name}</b></p>
         <p>Time left: <b>{timeLeft}</b> seconds</p>
-        <img src="/img/map-noConnections.svg" alt="Stations map" style={{maxWidth:'100%'}}/>
 
         <Row className="mt-3">
-            <Col md={6}>
-                <h5>Available connections</h5>
-                <ListGroup>
-                    {game.availableConnections.map( (connection) => {
-                        const position = selected.indexOf(connection.connectionId); //if not selected it's -1
-                        const isSelected = position !== -1;
-                        return(
-                            <ListGroup.Item key={connection.connectionId} action active={isSelected} onClick={() => selectConnection(connection.connectionId)}>
-                                {connection.station1Name} - {connection.station2Name}
-                                {isSelected && <span className="float-end">#{position+1}</span>}
-                            </ListGroup.Item>
-                        );
-                    })}
-                </ListGroup>
+            <Col md={4}>
+                <h5>Available connections</h5> 
+                <div className="connections-scroll">
+                    <ListGroup>
+                        {game.availableConnections.map( (connection) => {
+                            const position = selected.indexOf(connection.connectionId); //if not selected it's -1
+                            const isSelected = position !== -1;
+                            return(
+                                <ListGroup.Item key={connection.connectionId} action active={isSelected} onClick={() => selectConnection(connection.connectionId)}>
+                                    {connection.station1Name} - {connection.station2Name}
+                                    {isSelected && <span className="float-end">{position+1}</span>}
+                                </ListGroup.Item>
+                            );
+                        })}
+                    </ListGroup>
+                </div>
+                
             </Col>
-            <Col md={6}>
-                <h5>Selected connections,({selected.length} segments)</h5>
+            <Col md={8}>
+                <img src="/img/map-noConnections.svg" alt="Stations map" style={{maxWidth:'100%'}}/>
+            </Col>
+        </Row>
+        <Row>
+            <Col md={4}>
+                <Button className="mt-5" onClick={() => onSubmit(selected)} disabled={selected.length === 0}>
+                    Submit route
+                </Button>
+            </Col>
+            <Col md={8}>
+                <h5>Selected connections ({selected.length} segments)</h5>
                 <ListGroup>
                     {selected.map((id, index) => {
                         const connection = game.availableConnections.find((x) => x.connectionId === id);
@@ -61,9 +73,7 @@ function PlanningPhase({game, onSubmit}) {
                         );
                     })}
                 </ListGroup>
-                <Button className="mt-3" onClick={() => onSubmit(selected)} disabled={selected.length === 0}>
-                    Submit route
-                </Button>
+
             </Col>
         </Row>
     </>);
