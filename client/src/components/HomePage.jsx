@@ -10,7 +10,6 @@ function HomePage({user}) {
             Plan and run a route across the network before time runs out!
             Every game starts with 20 coins.
         </p>
-        <h5>How to play</h5>
         <p>
             In <b>Setup</b>, study the network map and its lines. 
             In <b>Planning</b> you get a random start and destination station and 90 seconds.

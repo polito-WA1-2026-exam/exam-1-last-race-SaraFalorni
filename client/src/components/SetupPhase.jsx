@@ -5,7 +5,7 @@ function SetupPhase({onReady}) {
     return(<>
         <h2>Setup</h2>
         <p>Study the map, when ready click the button and start the game!</p>
-        <img src="/img/map-withConnections.svg" alt="Network map" style={{maxWidth:'100%'}}/>
+        <img src="/img/map-withConnections.svg" alt="Network map" style={{maxWidth:'80%'}}/>
         <div className='mt-3'>
             <Button onClick={onReady}>Start game</Button>
         </div>

@@ -14,7 +14,7 @@
 ```js
 function User(userId, username, bestResult ) {
   this.userId = userId;
-  this.username = name;
+  this.username = username;
   this.bestResult = bestResult;
 }
 ```
@@ -56,12 +56,12 @@ function Station(stationId, name) {
 {
   "userId": 1,
   "username": "sara",
-  "bestResult": "24",
+  "bestResult": 24
 }
 ```
 - Status codes: `200 OK`, `401 Unauthorized`, `500 Internal Server Error`
 
-### `POST /api/sessions/current`
+### `POST /api/sessions`
 
 - Request body:
 
@@ -78,11 +78,11 @@ function Station(stationId, name) {
 {
   "userId": 1,
   "username": "sara",
-  "bestResult": "24",
+  "bestResult": 24
 }
 ```
 
-- Status codes: `200 OK`, `404 Not Found` , `500 Internal Server Error`, `422 Unprocessable Entity` 
+- Status codes: `200 OK`, `401 Unauthorized` , `500 Internal Server Error`, `422 Unprocessable Entity` 
 
 ### `DELETE /api/sessions/current`
 
@@ -110,7 +110,7 @@ starts a new game for a logged in user (assigns random start and destination sta
       "station1": 1,
       "station1Name": "Anellini Alley",
       "station2": 2,
-      "station2Name": "Pici Path",
+      "station2Name": "Pici Path"
     }
   ],
   "durationSeconds": 90
@@ -203,7 +203,7 @@ returns the ranking in descending order, including only users that played at lea
 - `RankingPage`
   - `RankTable`
 - `GamePage`
-- `SetUpPhase`
+- `SetupPhase`
   - `StartGameButton`
 - `PlanningPhase` 
   - `AvailableConnectionsList`

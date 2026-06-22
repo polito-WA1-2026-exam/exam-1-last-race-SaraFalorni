@@ -1,4 +1,3 @@
-import './App.css'
 import {useState, useEffect} from 'react';
 import {Routes, Route, Navigate } from 'react-router';
 import {Container} from 'react-bootstrap';
